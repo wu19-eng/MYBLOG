@@ -144,12 +144,19 @@ const sections = [
     font-weight: 800;
     color: var(--fg);
   }
+  .hero .display .w {
+    display: inline-block;
+    transform-origin: center;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hero .display .w:hover { transform: scale(1.08); }
   .hero .display .thin { font-weight: 300; color: var(--faint); }
   .hero .display .emph {
-    font-family: var(--serif);
-    font-style: italic;
+    font-family: "Brush Script MT", "Segoe Script", "Monotype Corsiva", cursive;
+    font-style: normal;
     font-weight: 400;
-    color: var(--accent);
+    color: var(--fg);
+    font-size: 1.06em;
   }
   .hero .slogan { margin: 0 0 10px; color: var(--muted); font-size: 15px; }
   .hero .intro { margin: 0; color: var(--muted); font-size: 15px; }
