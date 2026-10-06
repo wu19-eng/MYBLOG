@@ -15,7 +15,6 @@ const life = (await getCollection('life')).sort(
 );
 
 const formatDate = (d: Date) => d.toISOString().slice(0, 10);
-const email = 'you@example.com'; // TODO: 换成你的邮箱
 const categories = [
   { href: `${base}notes/`, title: '学习笔记', desc: '电气专业课 · 考研数一 · Simulink 仿真 · Python', color: 'var(--notes)' },
   { href: `${base}projects/`, title: '项目作品集', desc: '课程设计 · 仿真项目 · 竞赛（含踩坑复盘）', color: 'var(--projects)' },
@@ -24,7 +23,7 @@ const categories = [
 ];
 ---
 
-<Base title="【站点名】 · 学习笔记、项目作品集与生活随笔" description="一个电气人的学习轨迹与工程实践——把笔记写清楚，把项目做扎实，把生活留个记录。">
+<Base title="小九 · 学习笔记、项目作品集与生活随笔" description="一个电气人的学习轨迹与工程实践——把笔记写清楚，把项目做扎实，把生活留个记录。">
   <section class="hero">
     <h1>一个电气人的学习轨迹与工程实践</h1>
     <p class="slogan">把笔记写清楚，把项目做扎实，把生活留个记录。</p>
@@ -32,9 +31,6 @@ const categories = [
       【姓名】· 电气工程及其自动化专业在读 · 备考研究生（数一 · 英一 · 电路）
       <br />
       这里是我的数字自留地，也是我的求职名片。
-    </p>
-    <p class="mail">
-      联系我：<a href={`mailto:${email}`}>{email}</a>
     </p>
   </section>
 
@@ -91,8 +87,7 @@ const categories = [
   .hero { text-align: center; padding: 40px 0 28px; }
   .hero h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.4; }
   .slogan { margin: 0 0 14px; color: var(--muted); font-size: 16px; }
-  .intro { margin: 0 0 8px; color: #475569; font-size: 15px; }
-  .mail { margin: 0; font-size: 14px; }
+  .intro { margin: 0; color: #475569; font-size: 15px; }
 
   .cards { display: flex; flex-wrap: wrap; gap: 14px; margin: 28px 0 36px; }
   .card {

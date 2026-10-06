@@ -22,7 +22,7 @@ const projects = (await getCollection('projects')).filter((e) => e.data.tags?.in
 const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(tag));
 ---
 
-<Base title={`#${tag} · 【站点名】`} description={`标签 ${tag} 下的全部内容`}>
+<Base title={`#${tag} · 小九`} description={`标签 ${tag} 下的全部内容`}>
   <header class="page-head">
     <h1>#{tag}</h1>
     <p>笔记 {notes.length} · 项目 {projects.length} · 生活 {life.length}</p>
