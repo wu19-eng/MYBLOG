@@ -10,3 +10,6 @@ Thumbs.db
 # 本地环境
 .env
 .env.*
+
+# 构建日志
+build_log.txt
