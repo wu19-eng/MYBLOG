@@ -1,0 +1,51 @@
+﻿
+> personal-blog@0.1.0 build
+> astro build
+
+[2m20:55:43[22m [34m[content][39m Syncing content
+[33m[1m20:55:43[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "src\content\notes"
+[33m[1m20:55:43[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "src\content\projects"
+[33m[1m20:55:43[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "src\content\life"
+[2m20:55:43[22m [34m[content][39m Synced content
+[2m20:55:43[22m [34m[types][39m Generated [2m1.03s[22m
+[2m20:55:43[22m [34m[build][39m output: [34m"static"[39m
+[2m20:55:43[22m [34m[build][39m mode: [34m"static"[39m
+[2m20:55:43[22m [34m[build][39m directory: [34mC:\Users\NINE\Doubao\chats\2026-10-06\new-chat-3\dist\[39m
+[2m20:55:43[22m [34m[build][39m Collecting build info...
+[2m20:55:43[22m [34m[build][39m [32m✓ Completed in 1.05s.[39m
+[2m20:55:43[22m [34m[build][39m Building static entrypoints...
+[2m20:55:44[22m [34m[vite][39m [32m✓ built in 1.32s[39m
+[2m20:55:44[22m [34m[build][39m [32m✓ Completed in 1.36s.[39m
+
+[42m[30m generating static routes [39m[49m
+[2m20:55:45[22m [32m▶[39m src/pages/about.md
+[2m20:55:45[22m   [34m└─[39m [2m/about/index.html[22m [2m(+9ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/index.astro
+[2m20:55:45[22m   [34m└─[39m [2m/index.html[22m [2m(+7ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/life/[...slug].astro
+[2m20:55:45[22m   [34m├─[39m [2m/life/essays/example-first/index.html[22m [2m(+5ms)[22m 
+[2m20:55:45[22m   [34m├─[39m [2m/life/photos/example-photo/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m   [34m└─[39m [2m/life/reading/example-reading/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/life/index.astro
+[2m20:55:45[22m   [34m└─[39m [2m/life/index.html[22m [2m(+2ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/notes/[...slug].astro
+[2m20:55:45[22m   [34m├─[39m [2m/notes/simulink/example-simulink/index.html[22m [2m(+4ms)[22m 
+[2m20:55:45[22m   [34m└─[39m [2m/notes/electrical/example-note/index.html[22m [2m(+4ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/notes/index.astro
+[2m20:55:45[22m   [34m└─[39m [2m/notes/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/projects/[...slug].astro
+[2m20:55:45[22m   [34m└─[39m [2m/projects/course-design/example-substation/index.html[22m [2m(+5ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/projects/index.astro
+[2m20:55:45[22m   [34m└─[39m [2m/projects/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m [32m▶[39m src/pages/tags/[tag].astro
+[2m20:55:45[22m   [34m├─[39m [2m/tags/Simulink/index.html[22m [2m(+4ms)[22m 
+[2m20:55:45[22m   [34m├─[39m [2m/tags/建模/index.html[22m [2m(+4ms)[22m 
+[2m20:55:45[22m   [34m├─[39m [2m/tags/示例/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m   [34m├─[39m [2m/tags/高电压/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m   [34m├─[39m [2m/tags/随笔/index.html[22m [2m(+2ms)[22m 
+[2m20:55:45[22m   [34m├─[39m [2m/tags/照片/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m   [34m└─[39m [2m/tags/读书/index.html[22m [2m(+3ms)[22m 
+[2m20:55:45[22m [32m✓ Completed in 136ms.
+[39m
+[2m20:55:45[22m [34m[build][39m 18 page(s) built in [1m2.68s[22m
+[2m20:55:45[22m [34m[build][39m [1mComplete![22m

@@ -1,102 +1,171 @@
-# 个人静态博客
+# 小九的博客（MYBLOG）
 
 学习笔记 · 项目作品集 · 生活随笔 · 求职展示。纯静态站点：Markdown 写作，Astro 构建，GitHub Pages 托管，无后端。
 
-> 按需求：本骨架**不含私密内容模块**，所有内容均公开。
+线上地址：**https://wu19-eng.github.io/MYBLOG/**
 
 ## 快速开始
 
 ```bash
-npm install     # 安装依赖
-npm run dev     # 本地预览（默认 http://localhost:4321）
+npm install     # 装依赖（只需一次）
+npm run dev     # 本地预览 http://localhost:4321
 npm run build   # 构建到 dist/
-npm run preview # 本地预览构建产物
 ```
 
-需要 Node.js 18.17+（推荐 22）。本机未安装 Git，推送到 GitHub 前需先安装。
-
-## 目录结构
+## 目录结构（只需关心 content 和 public）
 
 ```
-├─ src/
-│  ├─ content/                    # 全部 Markdown 内容
-│  │  ├─ notes/                   # 学习笔记
-│  │  │  ├─ electrical/           # 电气专业课
-│  │  │  ├─ math/                 # 考研数一
-│  │  │  ├─ simulink/             # Simulink 仿真
-│  │  │  └─ python/               # Python 笔记
-│  │  ├─ projects/                # 项目作品集
-│  │  │  ├─ course-design/        # 课程设计
-│  │  │  ├─ simulation/           # 仿真项目
-│  │  │  └─ competition/          # 竞赛
-│  │  └─ life/                    # 生活随笔（不含私密模块）
-│  │     ├─ essays/               # 随笔
-│  │     ├─ reading/              # 读书
-│  │     └─ photos/               # 照片
-│  ├─ layouts/                    # Base / PostLayout / PageLayout
-│  ├─ components/                 # Header / Footer
-│  └─ pages/                      # 首页、各列表页、详情页、标签页、关于我
-├─ public/                        # 静态资源（favicon、照片放 public/images/）
-├─ .github/workflows/deploy.yml   # GitHub Actions 自动部署
-├─ astro.config.mjs
-└─ package.json
+src/
+├─ content/                  ← ★ 文章都放这里（.md 文件）
+│  ├─ notes/                 # 学习笔记
+│  │  ├─ electrical/         #   电气专业课
+│  │  ├─ math/               #   考研数一
+│  │  ├─ simulink/           #   Simulink 仿真
+│  │  └─ python/             #   Python 笔记
+│  ├─ projects/              # 项目作品集
+│  │  ├─ course-design/      #   课程设计
+│  │  ├─ simulation/         #   仿真项目
+│  │  └─ competition/        #   竞赛
+│  └─ life/                  # 生活随笔
+│     ├─ essays/             #   随笔
+│     ├─ reading/            #   读书
+│     └─ photos/             #   照片
+public/
+└─ images/                   ← ★ 照片文件放这里
 ```
 
-## 写作指南
+**规则：一个 .md 文件 = 一篇文章。文件名会成为网址。**
 
-在对应分类目录下新建 `.md` 文件，Frontmatter 必填字段：
+---
 
-| 字段 | 说明 | 适用 |
-| --- | --- | --- |
-| `title` | 标题（必填） | 全部 |
-| `date` | 日期（必填） | 全部 |
-| `category` | 分类，见下方枚举 | 全部 |
-| `description` | 摘要，显示在列表页 | 全部 |
-| `tags` | 标签数组，用于标签聚合页 | 笔记 / 生活 |
-| `tech` | 技术栈数组 | 项目 |
-| `status` | 项目状态，如"已完成" | 项目 |
-| `repo` | 代码仓库 URL（可选） | 项目 |
+## 内容编写教程（最简单版）
 
-分类枚举：
+### 一、添加一篇学习笔记
 
-- 笔记：`electrical`（电气专业课）/ `math`（考研数一）/ `simulink`（Simulink 仿真）/ `python`（Python 笔记）
-- 项目：`course-design`（课程设计）/ `simulation`（仿真项目）/ `competition`（竞赛）
-- 生活：`essays`（随笔）/ `reading`（读书）/ `photos`（照片）
+1. 打开 `src/content/notes/` 下对应的分类文件夹（如 `simulink/`）
+2. 新建一个 `.md` 文件，名字随意，建议英文短名，如 `simulink-quickstart.md`
+3. 把下面的内容粘进去，改掉【】里的部分：
 
-写作建议：
+```markdown
+---
+title: Simulink 建模入门
+date: 2026-10-06
+category: simulink
+tags: [Simulink, 建模]
+description: 一句话摘要，显示在列表页
+---
 
-- **笔记**：目录下自带模板 `example-*.md`，复制改内容即可；正文用 `##` 分节，会自动生成"目录"。
-- **项目**：上半部分写项目介绍（背景 / 方案 / 成果，成果尽量量化），下半部分单独写"踩坑复盘"（问题 → 原因 → 解决 → 经验）。
-- **照片**：图片放入 `public/images/`，正文用 `![说明](/images/xxx.jpg)` 引用。
+正文从这里开始。用 ## 分节，网站会自动生成目录。
+```
 
-## 部署（GitHub Pages）
+4. 保存，然后发布（见下方"发布"）。
 
-1. 在 GitHub 新建仓库（设为 **Public**）。
-2. 本机安装 Git 后初始化并推送：
+### 二、添加一个项目
+
+在 `src/content/projects/` 对应分类下新建 `.md`，用这个模板：
+
+```markdown
+---
+title: 110kV 变电站主接线设计
+date: 2026-10-06
+category: course-design
+tech: [变电站, 继电保护]
+status: 已完成
+description: 项目一句话简介
+---
+
+## 项目介绍
+
+背景、方案、成果（尽量写清数字，如成绩、指标）。
+
+## 踩坑复盘
+
+问题 → 原因 → 解决 → 经验。
+```
+
+### 三、添加一篇随笔（含读书、照片）
+
+在 `src/content/life/` 对应分类下新建 `.md`，用这个模板：
+
+```markdown
+---
+title: 今天的一件小事
+date: 2026-10-06
+category: essays
+tags: [随笔]
+description: 摘要（可省略这一行）
+---
+
+正文。
+```
+
+**放照片**：图片文件放进 `public/images/`，正文里写：
+
+```markdown
+![照片说明](/MYBLOG/images/照片文件名.jpg)
+```
+
+注意：图片引用必须带 `/MYBLOG/` 前缀（本地预览和线上一致）。
+
+### 四、修改文章
+
+用任何编辑器打开对应 `.md` 文件直接改即可：标题、正文、分类、标签都能改。保存后执行"发布"。
+
+- 改 `title` = 改文章标题；改 `category` = 换分类；改 `date` = 换排序位置（最新在前）。
+
+### 五、删除文章
+
+直接删除那个 `.md` 文件，再执行"发布"。
+
+### 六、发布（所有添加/修改/删除的最后一步）
+
+在项目文件夹打开命令行，执行：
 
 ```bash
-git init
-git add .
-git commit -m "init: 站点骨架"
-git branch -M main
-git remote add origin https://github.com/<username>/<repo>.git
-git push -u origin main
+git add -A
+git commit -m "更新：说明一下改了什么"
+git push
 ```
 
-3. 仓库 Settings → Pages → **Source 选择 "GitHub Actions"**（本项目自带 workflow，push 即自动构建部署）。
-4. 若仓库名不是 `<username>.github.io`（项目站），需修改 `astro.config.mjs` 中的 `base: '/'` 为 `base: '/<repo>/'`，并把 `site` 改为 `https://<username>.github.io/<repo>/`。
+约 1~2 分钟后自动部署上线，无需手动构建。
 
-## 定制清单（上线前必改）
+### 七、本地预览（发布前检查用）
 
-- [ ] `astro.config.mjs`：`site` 地址
-- [ ] `src/layouts/Base.astro`、`src/layouts/PostLayout.astro`、`src/layouts/PageLayout.astro`、`src/pages/index.astro`、`src/pages/tags/[tag].astro` 中的【站点名】
-- [ ] `src/pages/index.astro`：姓名、简介、邮箱
-- [ ] `src/components/Footer.astro`：邮箱
+```bash
+npm run dev
+```
+
+浏览器打开 http://localhost:4321 ，改完文件刷新即可看到效果，确认没问题再 push。
+
+### 八、字段速查表
+
+| 字段 | 必填 | 作用 | 适用板块 |
+| --- | --- | --- | --- |
+| `title` | ✅ | 文章标题 | 全部 |
+| `date` | ✅ | 日期，格式 `YYYY-MM-DD` | 全部 |
+| `category` | ✅ | 分类（见上面文件夹名） | 全部 |
+| `tags` | 可选 | 标签，`[]` 内逗号分隔，用于标签页 | 笔记 / 随笔 |
+| `description` | 可选 | 列表页摘要 | 全部 |
+| `tech` | 可选 | 技术栈 | 项目 |
+| `status` | 可选 | 状态，如"已完成" | 项目 |
+| `repo` | 可选 | 代码仓库网址 | 项目 |
+
+`category` 取值对照：笔记 `electrical / math / simulink / python`；项目 `course-design / simulation / competition`；生活 `essays / reading / photos`。
+
+---
+
+## 部署（已完成，留档备查）
+
+仓库已部署到 **https://wu19-eng.github.io/MYBLOG/**。原理：push 到 `main` → GitHub Actions 自动构建 → GitHub Pages 上线。以后不需要手动操作部署。
+
+## 待办清单
+
+- [ ] `src/pages/index.astro`：首页的【姓名】和简介改成真实信息
 - [ ] `src/pages/about.md`：个人简介、求职方向、技能栈
-- [ ] `public/favicon.svg`：站点图标
-- [ ] 删除 `src/content/` 下的 5 篇示例文章，替换为真实内容
+- [ ] `public/favicon.svg`：换站点图标（当前是 "B"）
+- [ ] 写第一批真实文章替换空目录
 
-## 路线图（可选增强，不阻塞上线）
+## 路线图（可选增强）
 
 - [ ] giscus 评论（GitHub Discussions，无后端）
 - [ ] pagefind 站内搜索
