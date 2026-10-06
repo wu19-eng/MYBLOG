@@ -161,6 +161,13 @@ const sections = [
   .hero .display:hover { gap: 0.1em; }
   .hero .display:hover .w { transform: scale(0.78); color: var(--faint); }
   .hero .display .w:hover { transform: scale(1.3); color: #d97706; }
+  /* the 被推开：靠近 own → the 向右躲；靠近 moment → the 向左躲 */
+  .hero .display .w:first-child:hover ~ .w:nth-child(2) {
+    transform: translateX(0.45em) scale(0.78);
+  }
+  .hero .display:has(.w:last-child:hover) .w:nth-child(2) {
+    transform: translateX(-0.45em) scale(0.78);
+  }
   .hero .slogan { margin: 0 0 10px; color: var(--muted); font-size: 15px; }
   .hero .intro { margin: 0; color: var(--muted); font-size: 15px; }
 
