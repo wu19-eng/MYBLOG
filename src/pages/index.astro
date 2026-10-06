@@ -74,7 +74,12 @@ const sections = [
 
   <section class="hero">
     <p class="kicker">Notes · Projects · Life</p>
-    <h1>把笔记写清楚，<br />把项目做扎实，把生活留个记录。</h1>
+    <h1 class="display">
+      <span class="w">own</span>{' '}
+      <span class="w thin">the</span>{' '}
+      <span class="w emph">moment</span>
+    </h1>
+    <p class="slogan">把笔记写清楚，把项目做扎实，把生活留个记录。</p>
     <p class="intro">
       【姓名】· 电气工程及其自动化专业在读 · 备考研究生（数一 · 英一 · 电路）
       <br />
@@ -131,13 +136,22 @@ const sections = [
 
 <style>
   .hero { padding: 40px 0 48px; border-bottom: 1px solid var(--line); }
-  .hero h1 {
-    margin: 14px 0 18px;
-    font-size: 42px;
-    line-height: 1.25;
+  .hero .display {
+    margin: 16px 0 14px;
+    font-size: clamp(46px, 9vw, 74px);
+    line-height: 1.05;
     letter-spacing: -0.02em;
     font-weight: 800;
+    color: var(--fg);
   }
+  .hero .display .thin { font-weight: 300; color: var(--faint); }
+  .hero .display .emph {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero .slogan { margin: 0 0 10px; color: var(--muted); font-size: 15px; }
   .hero .intro { margin: 0; color: var(--muted); font-size: 15px; }
 
   .feed-sec { padding: 48px 0 8px; }
@@ -168,6 +182,6 @@ const sections = [
   .arrow { color: var(--faint); font-size: 15px; }
 
   @media (max-width: 640px) {
-    .hero h1 { font-size: 30px; }
+    .hero .display { font-size: 40px; line-height: 1.1; }
   }
 </style>
