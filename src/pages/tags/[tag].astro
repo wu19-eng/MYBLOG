@@ -24,6 +24,7 @@ const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(t
 
 <Base title={`#${tag} · 小九`} description={`标签 ${tag} 下的全部内容`}>
   <header class="page-head">
+    <p class="kicker">Tag</p>
     <h1>#{tag}</h1>
     <p>笔记 {notes.length} · 项目 {projects.length} · 生活 {life.length}</p>
   </header>
@@ -31,11 +32,13 @@ const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(t
   {notes.length > 0 && (
     <section>
       <h2 class="group">学习笔记</h2>
-      <ul class="list">
+      <ul class="feed">
         {notes.map((n) => (
-          <li>
-            <a class="title" href={`${base}notes/${n.id}/`}>{n.data.title}</a>
-            <div class="meta"><span>{formatDate(n.data.date)}</span></div>
+          <li class="article-row">
+            <time>{formatDate(n.data.date)}</time>
+            <div class="body">
+              <h3><a href={`${base}notes/${n.id}/`}>{n.data.title}</a></h3>
+            </div>
           </li>
         ))}
       </ul>
@@ -45,11 +48,13 @@ const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(t
   {projects.length > 0 && (
     <section>
       <h2 class="group">项目作品</h2>
-      <ul class="list">
+      <ul class="feed">
         {projects.map((p) => (
-          <li>
-            <a class="title" href={`${base}projects/${p.id}/`}>{p.data.title}</a>
-            <div class="meta"><span>{formatDate(p.data.date)}</span></div>
+          <li class="article-row">
+            <time>{formatDate(p.data.date)}</time>
+            <div class="body">
+              <h3><a href={`${base}projects/${p.id}/`}>{p.data.title}</a></h3>
+            </div>
           </li>
         ))}
       </ul>
@@ -59,11 +64,13 @@ const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(t
   {life.length > 0 && (
     <section>
       <h2 class="group">生活随笔</h2>
-      <ul class="list">
+      <ul class="feed">
         {life.map((l) => (
-          <li>
-            <a class="title" href={`${base}life/${l.id}/`}>{l.data.title}</a>
-            <div class="meta"><span>{formatDate(l.data.date)}</span></div>
+          <li class="article-row">
+            <time>{formatDate(l.data.date)}</time>
+            <div class="body">
+              <h3><a href={`${base}life/${l.id}/`}>{l.data.title}</a></h3>
+            </div>
           </li>
         ))}
       </ul>
@@ -76,5 +83,5 @@ const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(t
 </Base>
 
 <style>
-  .group { font-size: 18px; margin: 28px 0 8px; }
+  .group { font-size: 18px; font-weight: 700; margin: 36px 0 4px; }
 </style>

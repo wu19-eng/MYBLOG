@@ -1,5 +1,5 @@
 ---
-// 学习笔记列表页：分类 Tab + 标签聚合
+// 学习笔记列表页：分类 Tab + 时间流 + 标签云
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
@@ -24,6 +24,7 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 
 <Base title="学习笔记 · 小九" description="电气专业课、考研数一、Simulink 仿真、Python 的学习笔记，按分类与标签归档。">
   <header class="page-head">
+    <p class="kicker">Learning Notes</p>
     <h1>学习笔记</h1>
     <p>电气专业课 · 考研数一 · Simulink 仿真 · Python，按标签归档，方便检索。</p>
   </header>
@@ -39,25 +40,27 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
     }
   </nav>
 
-  <ul class="list">
+  <ul class="feed">
     {
       filtered.map((n) => (
-        <li>
-          <a class="title" href={`${base}notes/${n.id}/`}>{n.data.title}</a>
-          <div class="meta">
-            <span>{formatDate(n.data.date)}</span>
-            <span class="cat-badge">{categoryLabels[n.data.category]}</span>
-          </div>
-          {n.data.description && <p class="desc">{n.data.description}</p>}
-          <div class="tags">
-            {n.data.tags?.map((t) => <a href={`${base}tags/${t}`}>#{t}</a>)}
+        <li class="article-row">
+          <time>{formatDate(n.data.date)}</time>
+          <div class="body">
+            <h3><a href={`${base}notes/${n.id}/`}>{n.data.title}</a></h3>
+            {n.data.description && <p class="desc">{n.data.description}</p>}
+            <div class="meta">
+              <span class="cat-badge">{categoryLabels[n.data.category]}</span>
+              {n.data.tags?.map((t) => (
+                <a class="tag-link" href={`${base}tags/${t}`}>#{t}</a>
+              ))}
+            </div>
           </div>
         </li>
       ))
     }
     {
       filtered.length === 0 && (
-        <li class="empty">该分类下还没有文章，去 <a href={`${base}notes/`}>全部</a> 看看，或新建一篇吧。</li>
+        <li class="empty">这个分类还没有内容，去 <a href={`${base}notes/`}>全部</a> 看看。</li>
       )
     }
   </ul>

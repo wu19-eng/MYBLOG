@@ -1,5 +1,5 @@
 ---
-// 项目作品集列表页：卡片式
+// 项目作品集列表页：精修卡片
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
@@ -22,6 +22,7 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 
 <Base title="项目作品集 · 小九" description="课程设计、仿真项目与竞赛作品，项目介绍 + 踩坑复盘。">
   <header class="page-head">
+    <p class="kicker">Portfolio</p>
     <h1>项目作品集</h1>
     <p>课程设计 · 仿真项目 · 竞赛。每个项目包含方案介绍与踩坑复盘，成果尽量量化。</p>
   </header>
@@ -41,18 +42,18 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
     {
       filtered.map((p) => (
         <a class="card" href={`${base}projects/${p.id}/`}>
-          <div class="card-head">
+          <div class="card-top">
             <span class="cat-badge">{categoryLabels[p.data.category]}</span>
-            <span class="date">{formatDate(p.data.date)}</span>
+            <time>{formatDate(p.data.date)}</time>
           </div>
           <div class="card-title">{p.data.title}</div>
           {p.data.description && <p class="desc">{p.data.description}</p>}
           <div class="tech">
             {p.data.tech?.map((t) => <span class="chip">{t}</span>)}
           </div>
-          <div class="foot">
+          <div class="card-foot">
             <span class="status">{p.data.status}</span>
-            <span class="more">查看项目 →</span>
+            <span class="more">查看 →</span>
           </div>
         </a>
       ))
@@ -61,7 +62,7 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 
   {
     filtered.length === 0 && (
-      <p class="empty">该分类下还没有项目，去 <a href={`${base}projects/`}>全部</a> 看看，或新建一篇吧。</p>
+      <p class="empty">这个分类还没有项目，去 <a href={`${base}projects/`}>全部</a> 看看。</p>
     )
   }
 </Base>
@@ -69,21 +70,43 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 <style>
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .card {
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 18px; border: 1px solid var(--line); border-radius: 10px;
-    background: var(--card); color: var(--fg);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--fg);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
-  .card:hover { text-decoration: none; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08); transform: translateY(-2px); }
-  .card-head { display: flex; justify-content: space-between; align-items: center; }
-  .date { color: var(--muted); font-size: 12px; }
-  .card-title { font-size: 17px; font-weight: 700; line-height: 1.4; }
-  .desc { margin: 0; color: #475569; font-size: 13px; flex: 1; }
+  .card:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(24, 24, 27, 0.06);
+    border-color: #d4d4d8;
+  }
+  .card-top { display: flex; justify-content: space-between; align-items: center; }
+  .card-top time { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  .card-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.4; }
+  .desc { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1; }
   .tech { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip { font-size: 12px; color: var(--projects); background: #ecfdf5; border-radius: 4px; padding: 1px 8px; }
-  .foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--line); padding-top: 8px; }
-  .status { font-size: 12px; color: var(--muted); }
-  .more { font-size: 13px; color: var(--projects); font-weight: 600; }
-  .empty { color: var(--muted); }
+  .chip {
+    font-size: 12px;
+    color: #4b5563;
+    background: #f4f4f5;
+    border-radius: 5px;
+    padding: 1px 9px;
+  }
+  .card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+  .status { font-size: 12px; color: var(--faint); }
+  .more { font-size: 13px; color: var(--accent); font-weight: 600; }
   @media (max-width: 640px) {
     .grid { grid-template-columns: 1fr; }
   }

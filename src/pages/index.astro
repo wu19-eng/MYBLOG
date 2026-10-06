@@ -1,9 +1,10 @@
 ---
-// 首页：Hero + 分类入口 + 最新内容
+// 首页：blog 形式 —— Hero + 统一时间流 + 板块索引
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
+
 const notes = (await getCollection('notes')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
@@ -14,19 +15,66 @@ const life = (await getCollection('life')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
+const noteLabels: Record<string, string> = {
+  electrical: '电气专业课',
+  math: '考研数一',
+  simulink: 'Simulink 仿真',
+  python: 'Python 笔记',
+};
+const projectLabels: Record<string, string> = {
+  'course-design': '课程设计',
+  simulation: '仿真项目',
+  competition: '竞赛',
+};
+const lifeLabels: Record<string, string> = {
+  essays: '随笔',
+  reading: '读书',
+  photos: '照片',
+};
+
 const formatDate = (d: Date) => d.toISOString().slice(0, 10);
-const categories = [
-  { href: `${base}notes/`, title: '学习笔记', desc: '电气专业课 · 考研数一 · Simulink 仿真 · Python', color: 'var(--notes)' },
-  { href: `${base}projects/`, title: '项目作品集', desc: '课程设计 · 仿真项目 · 竞赛（含踩坑复盘）', color: 'var(--projects)' },
-  { href: `${base}life/`, title: '生活随笔', desc: '随笔 · 读书 · 照片', color: 'var(--life)' },
-  { href: `${base}about/`, title: '关于我', desc: '个人简介 · 建站说明', color: 'var(--about)' },
+
+// 三类内容合并为统一时间流
+const feed = [
+  ...notes.map((n) => ({
+    date: n.data.date,
+    title: n.data.title,
+    desc: n.data.description,
+    url: `${base}notes/${n.id}/`,
+    badge: noteLabels[n.data.category] ?? '',
+    tags: n.data.tags ?? [],
+  })),
+  ...projects.map((p) => ({
+    date: p.data.date,
+    title: p.data.title,
+    desc: p.data.description,
+    url: `${base}projects/${p.id}/`,
+    badge: projectLabels[p.data.category] ?? '',
+    tags: p.data.tech ?? [],
+  })),
+  ...life.map((l) => ({
+    date: l.data.date,
+    title: l.data.title,
+    desc: l.data.description,
+    url: `${base}life/${l.id}/`,
+    badge: lifeLabels[l.data.category] ?? '',
+    tags: l.data.tags ?? [],
+  })),
+].sort((a, b) => b.date.getTime() - a.date.getTime());
+
+const sections = [
+  { href: `${base}notes/`, num: '01', title: '学习笔记', desc: '电气专业课 · 考研数一 · Simulink 仿真 · Python' },
+  { href: `${base}projects/`, num: '02', title: '项目作品集', desc: '课程设计 · 仿真项目 · 竞赛，附踩坑复盘' },
+  { href: `${base}life/`, num: '03', title: '生活随笔', desc: '随笔 · 读书 · 照片' },
+  { href: `${base}about/`, num: '04', title: '关于我', desc: '个人简介 · 建站说明' },
 ];
 ---
 
 <Base title="小九 · 学习笔记、项目作品集与生活随笔" description="一个电气人的学习轨迹与工程实践——把笔记写清楚，把项目做扎实，把生活留个记录。">
+
   <section class="hero">
-    <h1>一个电气人的学习轨迹与工程实践</h1>
-    <p class="slogan">把笔记写清楚，把项目做扎实，把生活留个记录。</p>
+    <p class="kicker">Notes · Projects · Life</p>
+    <h1>把笔记写清楚，<br />把项目做扎实，把生活留个记录。</h1>
     <p class="intro">
       【姓名】· 电气工程及其自动化专业在读 · 备考研究生（数一 · 英一 · 电路）
       <br />
@@ -34,83 +82,92 @@ const categories = [
     </p>
   </section>
 
-  <section class="cards">
+  <section class="feed-sec">
+    <div class="sec-head">
+      <h2>最新动态</h2>
+      <a class="more" href={`${base}notes/`}>全部文章 →</a>
+    </div>
+
     {
-      categories.map((c) => (
-        <a class="card" style={`--c: ${c.color}`} href={c.href}>
-          <span class="card-title">{c.title}</span>
-          <span class="card-desc">{c.desc}</span>
-          <span class="card-more">进入 →</span>
-        </a>
-      ))
+      feed.length > 0 ? (
+        <ul class="feed">
+          {feed.map((item) => (
+            <li class="article-row">
+              <time>{formatDate(item.date)}</time>
+              <div class="body">
+                <h3><a href={item.url}>{item.title}</a></h3>
+                {item.desc && <p class="desc">{item.desc}</p>}
+                <div class="meta">
+                  {item.badge && <span class="cat-badge">{item.badge}</span>}
+                  {item.tags.map((t: string) => (
+                    <a class="tag-link" href={`${base}tags/${t}`}>#{t}</a>
+                  ))}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">第一篇内容正在路上——会是一篇笔记、一个项目，或一段随笔。</p>
+      )
     }
   </section>
 
-  <section class="cols">
-    <div class="col">
-      <h2><a href={`${base}notes/`}>最新笔记</a></h2>
-      <ul>
-        {notes.slice(0, 3).map((n) => (
-          <li>
-            <a href={`${base}notes/${n.id}/`}>{n.data.title}</a>
-            <span class="date">{formatDate(n.data.date)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div class="col">
-      <h2><a href={`${base}projects/`}>最新项目</a></h2>
-      <ul>
-        {projects.slice(0, 3).map((p) => (
-          <li>
-            <a href={`${base}projects/${p.id}/`}>{p.data.title}</a>
-            <span class="date">{formatDate(p.data.date)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div class="col">
-      <h2><a href={`${base}life/`}>最新随笔</a></h2>
-      <ul>
-        {life.slice(0, 3).map((l) => (
-          <li>
-            <a href={`${base}life/${l.id}/`}>{l.data.title}</a>
-            <span class="date">{formatDate(l.data.date)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
+  <nav class="index-nav">
+    {
+      sections.map((s) => (
+        <a class="index-row" href={s.href}>
+          <span class="num">{s.num}</span>
+          <span class="idx-body">
+            <span class="idx-title">{s.title}</span>
+            <span class="idx-desc">{s.desc}</span>
+          </span>
+          <span class="arrow">→</span>
+        </a>
+      ))
+    }
+  </nav>
 </Base>
 
 <style>
-  .hero { text-align: center; padding: 40px 0 28px; }
-  .hero h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.4; }
-  .slogan { margin: 0 0 14px; color: var(--muted); font-size: 16px; }
-  .intro { margin: 0; color: #475569; font-size: 15px; }
-
-  .cards { display: flex; flex-wrap: wrap; gap: 14px; margin: 28px 0 36px; }
-  .card {
-    flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;
-    padding: 18px 18px 14px; border: 1px solid var(--line); border-top: 3px solid var(--c);
-    border-radius: 10px; background: var(--card); color: var(--fg);
+  .hero { padding: 40px 0 48px; border-bottom: 1px solid var(--line); }
+  .hero h1 {
+    margin: 14px 0 18px;
+    font-size: 42px;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    font-weight: 800;
   }
-  .card:hover { text-decoration: none; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08); transform: translateY(-2px); }
-  .card-title { font-size: 17px; font-weight: 700; }
-  .card-desc { color: var(--muted); font-size: 13px; flex: 1; }
-  .card-more { font-size: 13px; color: var(--c); font-weight: 600; }
+  .hero .intro { margin: 0; color: var(--muted); font-size: 15px; }
 
-  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  .col h2 { font-size: 17px; margin: 0 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
-  .col ul { list-style: none; padding: 0; margin: 0; }
-  .col li { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px dashed var(--line); }
-  .col li:last-child { border-bottom: none; }
-  .col li a { color: var(--fg); font-size: 14px; }
-  .col li a:hover { color: var(--accent); text-decoration: none; }
-  .col .date { color: var(--muted); font-size: 12px; }
+  .feed-sec { padding: 48px 0 8px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .sec-head h2 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+  .more { font-size: 13.5px; color: var(--muted); }
+  .more:hover { color: var(--accent); }
 
-  @media (max-width: 760px) {
-    .hero h1 { font-size: 24px; }
-    .cols { grid-template-columns: 1fr; gap: 20px; }
+  .index-nav { margin-top: 48px; border-top: 1px solid var(--line); }
+  .index-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg);
+  }
+  .index-row:hover { color: var(--accent); }
+  .num { font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
+  .idx-body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .idx-title { font-size: 17px; font-weight: 700; }
+  .idx-desc { font-size: 13px; color: var(--muted); }
+  .arrow { color: var(--faint); font-size: 15px; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 30px; }
   }
 </style>

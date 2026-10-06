@@ -1,6 +1,5 @@
 ---
-// 文章详情布局：笔记 / 项目 / 生活共用
-// 功能：元信息 + 目录（TOC）+ 正文渲染
+// 文章详情布局：笔记 / 项目 / 生活共用 —— 阅读版式
 import Base from './Base.astro';
 import { render } from 'astro:content';
 
@@ -20,19 +19,19 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <Base title={`${entry.data.title} · ${siteName}`} description={entry.data.description}>
-  <article>
-    <p class="back"><a href={backHref || base}>{backLabel || '← 返回'}</a></p>
+  <article class="post">
+    <p class="back"><a href={backHref || base}>← {backLabel || '返回'}</a></p>
 
     <header class="head">
       <h1>{entry.data.title}</h1>
       <div class="meta">
-        <span>{formatDate(entry.data.date)}</span>
+        <time>{formatDate(entry.data.date)}</time>
         {categoryLabel && <span class="cat-badge">{categoryLabel}</span>}
         {entry.data.tags?.map((t: string) => (
           <a href={`${base}tags/${t}`}>#{t}</a>
         ))}
-        {entry.data.tech?.map((t: string) => <span class="tech">{t}</span>)}
-        {entry.data.status && <span class="status">{entry.data.status}</span>}
+        {entry.data.tech?.map((t: string) => <span class="chip">{t}</span>)}
+        {entry.data.status && <span class="chip">{entry.data.status}</span>}
       </div>
       {entry.data.description && <p class="desc">{entry.data.description}</p>}
     </header>
@@ -55,24 +54,55 @@ const base = import.meta.env.BASE_URL;
     <div class="content">
       <Content />
     </div>
+
+    <p class="back bottom"><a href={backHref || base}>← {backLabel || '返回'}</a></p>
   </article>
 </Base>
 
 <style>
-  .back { margin: 0 0 8px; font-size: 14px; }
-  .head { margin-bottom: 20px; }
-  .head h1 { margin: 0 0 10px; font-size: 28px; line-height: 1.4; }
-  .head .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; }
-  .head .tech, .head .status { font-size: 13px; color: #475569; background: #f1f5f9; border-radius: 4px; padding: 1px 8px; }
-  .head .desc { margin: 10px 0 0; color: #475569; font-size: 15px; }
+  .post { max-width: 680px; margin: 0 auto; }
+  .back { margin: 0 0 12px; font-size: 13.5px; color: var(--faint); }
+  .back a { color: var(--faint); }
+  .back a:hover { color: var(--accent); }
+  .back.bottom { margin: 56px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+
+  .head { margin-bottom: 36px; }
+  .head h1 {
+    margin: 0 0 14px;
+    font-size: 36px;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+  .head .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    color: var(--faint);
+    font-size: 13.5px;
+  }
+  .head .meta time { font-family: var(--mono); font-size: 12.5px; }
+  .head .meta a { color: var(--faint); }
+  .head .meta a:hover { color: var(--accent); }
+  .head .chip { font-size: 12px; color: #4b5563; background: #f4f4f5; border-radius: 5px; padding: 1px 9px; }
+  .head .desc { margin: 14px 0 0; color: var(--muted); font-size: 15px; }
+
   .toc {
-    margin: 0 0 24px; padding: 10px 14px; border: 1px solid var(--line);
-    border-radius: 8px; background: var(--card); font-size: 14px;
+    margin: 0 0 32px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    font-size: 14px;
   }
   .toc summary { cursor: pointer; color: var(--muted); font-weight: 600; }
-  .toc ol { margin: 8px 0 0; padding-left: 18px; }
-  .toc li { margin: 2px 0; }
+  .toc ol { margin: 10px 0 0; padding-left: 18px; }
+  .toc li { margin: 3px 0; }
+  .toc a { color: var(--muted); }
+  .toc a:hover { color: var(--accent); }
+
   @media (max-width: 640px) {
-    .head h1 { font-size: 23px; }
+    .head h1 { font-size: 28px; }
   }
 </style>

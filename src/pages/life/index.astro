@@ -1,5 +1,5 @@
 ---
-// 生活随笔列表页
+// 生活随笔列表页：时间流
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
@@ -21,6 +21,7 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 
 <Base title="生活随笔 · 小九" description="随笔、读书与照片——书、照片，和一些值得被写下来的瞬间。">
   <header class="page-head">
+    <p class="kicker">Life & Reading</p>
     <h1>生活随笔</h1>
     <p>随笔 · 读书 · 照片。这个板块完全公开，不涉及私密内容。</p>
   </header>
@@ -36,25 +37,27 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
     }
   </nav>
 
-  <ul class="list">
+  <ul class="feed">
     {
       filtered.map((l) => (
-        <li>
-          <a class="title" href={`${base}life/${l.id}/`}>{l.data.title}</a>
-          <div class="meta">
-            <span>{formatDate(l.data.date)}</span>
-            <span class="cat-badge">{categoryLabels[l.data.category]}</span>
-          </div>
-          {l.data.description && <p class="desc">{l.data.description}</p>}
-          <div class="tags">
-            {l.data.tags?.map((t) => <a href={`${base}tags/${t}`}>#{t}</a>)}
+        <li class="article-row">
+          <time>{formatDate(l.data.date)}</time>
+          <div class="body">
+            <h3><a href={`${base}life/${l.id}/`}>{l.data.title}</a></h3>
+            {l.data.description && <p class="desc">{l.data.description}</p>}
+            <div class="meta">
+              <span class="cat-badge">{categoryLabels[l.data.category]}</span>
+              {l.data.tags?.map((t) => (
+                <a class="tag-link" href={`${base}tags/${t}`}>#{t}</a>
+              ))}
+            </div>
           </div>
         </li>
       ))
     }
     {
       filtered.length === 0 && (
-        <li class="empty">这里还没有内容，去 <a href={`${base}life/`}>全部</a> 看看，或新建一篇吧。</li>
+        <li class="empty">这里还没有内容，去 <a href={`${base}life/`}>全部</a> 看看。</li>
       )
     }
   </ul>

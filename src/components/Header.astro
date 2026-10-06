@@ -1,5 +1,5 @@
 ---
-// 顶部导航
+// 顶部导航：极简细导航
 const { siteName } = Astro.props;
 const path = Astro.url.pathname;
 const base = import.meta.env.BASE_URL;
@@ -14,7 +14,7 @@ const nav = [
 
 <header>
   <div class="wrap">
-    <a class="brand" href={base}>{siteName}的博客</a>
+    <a class="brand" href={base}>{siteName}</a>
     <nav>
       {
         nav.map((item) => (
@@ -34,27 +34,36 @@ const nav = [
 
 <style>
   header {
-    background: var(--card);
-    border-bottom: 1px solid var(--line);
     position: sticky;
     top: 0;
     z-index: 10;
+    background: rgba(251, 251, 250, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
   }
   .wrap {
-    width: min(880px, 100% - 32px);
+    width: min(880px, 100% - 40px);
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 56px;
+    min-height: 60px;
     gap: 12px;
   }
-  .brand { font-weight: 700; color: var(--fg); font-size: 17px; white-space: nowrap; }
-  .brand:hover { text-decoration: none; }
-  nav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .brand {
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .brand:hover { color: var(--accent); }
+  nav { display: flex; flex-wrap: wrap; gap: 4px 22px; }
   nav a { color: var(--muted); font-size: 14px; white-space: nowrap; }
-  nav a.active, nav a:hover { color: var(--accent); text-decoration: none; font-weight: 600; }
+  nav a:hover { color: var(--fg); }
+  nav a.active { color: var(--fg); font-weight: 700; }
   @media (max-width: 640px) {
-    .wrap { flex-direction: column; padding: 8px 0; }
+    .wrap { flex-direction: column; padding: 10px 0; }
+    nav { justify-content: center; gap: 4px 16px; }
+    nav a { font-size: 13px; }
   }
 </style>
