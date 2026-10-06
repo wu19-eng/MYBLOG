@@ -1,0 +1,26 @@
+---
+// 学习笔记详情页（[...slug] 支持子目录路径）
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map((n) => ({ params: { slug: n.id }, props: { entry: n } }));
+}
+
+const categoryLabels: Record<string, string> = {
+  electrical: '电气专业课',
+  math: '考研数一',
+  simulink: 'Simulink 仿真',
+  python: 'Python 笔记',
+};
+
+const { entry } = Astro.props;
+---
+
+<PostLayout
+  entry={entry}
+  categoryLabel={categoryLabels[entry.data.category]}
+  backHref={entry.data.category ? `${import.meta.env.BASE_URL}notes/?category=${entry.data.category}` : `${import.meta.env.BASE_URL}notes/`}
+  backLabel="← 笔记列表"
+/>

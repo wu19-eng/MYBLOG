@@ -1,0 +1,78 @@
+---
+// 文章详情布局：笔记 / 项目 / 生活共用
+// 功能：元信息 + 目录（TOC）+ 正文渲染
+import Base from './Base.astro';
+import { render } from 'astro:content';
+
+interface Props {
+  entry: any;
+  categoryLabel?: string;
+  backHref?: string;
+  backLabel?: string;
+}
+
+const { entry, categoryLabel, backHref, backLabel } = Astro.props;
+const { Content, headings } = await render(entry);
+
+const formatDate = (d: Date) => d.toISOString().slice(0, 10);
+const siteName = '【站点名】';
+const base = import.meta.env.BASE_URL;
+---
+
+<Base title={`${entry.data.title} · ${siteName}`} description={entry.data.description}>
+  <article>
+    <p class="back"><a href={backHref || base}>{backLabel || '← 返回'}</a></p>
+
+    <header class="head">
+      <h1>{entry.data.title}</h1>
+      <div class="meta">
+        <span>{formatDate(entry.data.date)}</span>
+        {categoryLabel && <span class="cat-badge">{categoryLabel}</span>}
+        {entry.data.tags?.map((t: string) => (
+          <a href={`${base}tags/${t}`}>#{t}</a>
+        ))}
+        {entry.data.tech?.map((t: string) => <span class="tech">{t}</span>)}
+        {entry.data.status && <span class="status">{entry.data.status}</span>}
+      </div>
+      {entry.data.description && <p class="desc">{entry.data.description}</p>}
+    </header>
+
+    {headings.length > 0 && (
+      <details class="toc">
+        <summary>目录</summary>
+        <ol>
+          {headings
+            .filter((h: any) => h.depth <= 3)
+            .map((h: any) => (
+              <li style={`margin-left: ${(h.depth - 2) * 14}px`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+        </ol>
+      </details>
+    )}
+
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .back { margin: 0 0 8px; font-size: 14px; }
+  .head { margin-bottom: 20px; }
+  .head h1 { margin: 0 0 10px; font-size: 28px; line-height: 1.4; }
+  .head .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; }
+  .head .tech, .head .status { font-size: 13px; color: #475569; background: #f1f5f9; border-radius: 4px; padding: 1px 8px; }
+  .head .desc { margin: 10px 0 0; color: #475569; font-size: 15px; }
+  .toc {
+    margin: 0 0 24px; padding: 10px 14px; border: 1px solid var(--line);
+    border-radius: 8px; background: var(--card); font-size: 14px;
+  }
+  .toc summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+  .toc ol { margin: 8px 0 0; padding-left: 18px; }
+  .toc li { margin: 2px 0; }
+  @media (max-width: 640px) {
+    .head h1 { font-size: 23px; }
+  }
+</style>

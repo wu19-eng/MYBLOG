@@ -1,0 +1,130 @@
+---
+// 全站基础布局：全局样式 + 页头 + 页脚
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '学习笔记 · 项目作品集 · 生活随笔' } = Astro.props;
+const siteName = '【站点名】'; // TODO: 改成你的站点名
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <style is:global>
+      :root {
+        --bg: #f8fafc;
+        --fg: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --accent: #2563eb;
+        --card: #ffffff;
+        --notes: #2563eb;
+        --projects: #059669;
+        --life: #d97706;
+        --about: #6b7280;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        line-height: 1.75;
+        font-size: 16px;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      main { width: min(880px, 100% - 32px); margin: 0 auto; padding: 32px 0 72px; }
+
+      /* 通用块：页头 */
+      .page-head { margin-bottom: 20px; }
+      .page-head h1 { margin: 0 0 6px; font-size: 28px; }
+      .page-head p { margin: 0; color: var(--muted); font-size: 15px; }
+
+      /* 通用块：分类 Tab */
+      .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+      .tabs a {
+        padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px;
+        color: var(--muted); font-size: 14px; background: var(--card);
+      }
+      .tabs a:hover { text-decoration: none; border-color: var(--accent); color: var(--accent); }
+      .tabs a.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+      /* 通用块：文章列表 */
+      .list { list-style: none; padding: 0; margin: 0 0 40px; }
+      .list li { padding: 16px 0; border-bottom: 1px solid var(--line); }
+      .list li:first-child { padding-top: 0; }
+      .list .title { font-size: 18px; font-weight: 700; color: var(--fg); }
+      .list .title:hover { color: var(--accent); text-decoration: none; }
+      .list .meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0; color: var(--muted); font-size: 13px; }
+      .list .desc { margin: 6px 0; color: #475569; font-size: 14px; }
+      .list .tags { display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; }
+      .list .tags a { color: var(--muted); }
+      .list .tags a:hover { color: var(--accent); }
+      .cat-badge {
+        display: inline-block; padding: 1px 10px; border-radius: 999px;
+        font-size: 12px; color: #fff; background: var(--muted);
+      }
+      .empty { color: var(--muted); }
+
+      /* 通用块：标签云 */
+      .tag-cloud { border-top: 1px dashed var(--line); padding-top: 16px; }
+      .tag-cloud h2 { font-size: 16px; margin: 0 0 10px; }
+      .tag-cloud a {
+        display: inline-block; margin: 0 8px 8px 0; padding: 2px 10px;
+        border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--muted);
+      }
+      .tag-cloud a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+
+      /* 正文排版（markdown 渲染区） */
+      .content h2 { font-size: 22px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+      .content h3 { font-size: 18px; margin: 24px 0 8px; }
+      .content p { margin: 10px 0; }
+      .content ul, .content ol { padding-left: 1.4em; }
+      .content li { margin: 4px 0; }
+      .content blockquote {
+        margin: 12px 0; padding: 8px 16px; border-left: 4px solid var(--accent);
+        background: #f1f5f9; color: #475569; border-radius: 0 6px 6px 0;
+      }
+      .content code {
+        padding: 2px 6px; border-radius: 4px; background: #f1f5f9;
+        font-family: Consolas, "Courier New", monospace; font-size: 0.9em;
+      }
+      .content pre {
+        padding: 14px 16px; border-radius: 8px; background: #0f172a; color: #e2e8f0;
+        overflow-x: auto; font-size: 14px; line-height: 1.6;
+      }
+      .content pre code { background: none; padding: 0; color: inherit; }
+      .content table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+      .content th, .content td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; }
+      .content th { background: #f1f5f9; }
+      .content img { max-width: 100%; border-radius: 8px; }
+      .content hr { border: none; border-top: 1px dashed var(--line); margin: 24px 0; }
+
+      @media (max-width: 640px) {
+        body { font-size: 15px; }
+        .page-head h1 { font-size: 24px; }
+      }
+    </style>
+  </head>
+  <body>
+    <Header siteName={siteName} />
+    <main>
+      <slot />
+    </main>
+    <Footer siteName={siteName} />
+  </body>
+</html>

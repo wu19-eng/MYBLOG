@@ -1,0 +1,25 @@
+---
+// 生活随笔详情页
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const life = await getCollection('life');
+  return life.map((l) => ({ params: { slug: l.id }, props: { entry: l } }));
+}
+
+const categoryLabels: Record<string, string> = {
+  essays: '随笔',
+  reading: '读书',
+  photos: '照片',
+};
+
+const { entry } = Astro.props;
+---
+
+<PostLayout
+  entry={entry}
+  categoryLabel={categoryLabels[entry.data.category]}
+  backHref={entry.data.category ? `${import.meta.env.BASE_URL}life/?category=${entry.data.category}` : `${import.meta.env.BASE_URL}life/`}
+  backLabel="← 生活列表"
+/>

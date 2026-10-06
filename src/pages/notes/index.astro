@@ -1,0 +1,73 @@
+---
+// 学习笔记列表页：分类 Tab + 标签聚合
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
+
+const categoryLabels: Record<string, string> = {
+  electrical: '电气专业课',
+  math: '考研数一',
+  simulink: 'Simulink 仿真',
+  python: 'Python 笔记',
+};
+
+const all = (await getCollection('notes')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const active = Astro.url.searchParams.get('category') ?? 'all';
+const filtered =
+  active === 'all' ? all : all.filter((n) => n.data.category === active);
+const tags = [...new Set(all.flatMap((n) => n.data.tags ?? []))].sort();
+const formatDate = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base title="学习笔记 · 【站点名】" description="电气专业课、考研数一、Simulink 仿真、Python 的学习笔记，按分类与标签归档。">
+  <header class="page-head">
+    <h1>学习笔记</h1>
+    <p>电气专业课 · 考研数一 · Simulink 仿真 · Python，按标签归档，方便检索。</p>
+  </header>
+
+  <nav class="tabs">
+    <a href={`${base}notes/`} class:list={{ active: active === 'all' }}>全部</a>
+    {
+      Object.entries(categoryLabels).map(([key, label]) => (
+        <a href={`${base}notes/?category=${key}`} class:list={{ active: active === key }}>
+          {label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <ul class="list">
+    {
+      filtered.map((n) => (
+        <li>
+          <a class="title" href={`${base}notes/${n.id}/`}>{n.data.title}</a>
+          <div class="meta">
+            <span>{formatDate(n.data.date)}</span>
+            <span class="cat-badge">{categoryLabels[n.data.category]}</span>
+          </div>
+          {n.data.description && <p class="desc">{n.data.description}</p>}
+          <div class="tags">
+            {n.data.tags?.map((t) => <a href={`${base}tags/${t}`}>#{t}</a>)}
+          </div>
+        </li>
+      ))
+    }
+    {
+      filtered.length === 0 && (
+        <li class="empty">该分类下还没有文章，去 <a href={`${base}notes/`}>全部</a> 看看，或新建一篇吧。</li>
+      )
+    }
+  </ul>
+
+  {
+    tags.length > 0 && (
+      <section class="tag-cloud">
+        <h2>全部标签</h2>
+        {tags.map((t) => <a href={`${base}tags/${t}`}>#{t}</a>)}
+      </section>
+    )
+  }
+</Base>

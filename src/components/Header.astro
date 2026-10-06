@@ -1,0 +1,60 @@
+---
+// 顶部导航
+const { siteName } = Astro.props;
+const path = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+const nav = [
+  { href: `${base}`, label: '首页' },
+  { href: `${base}notes/`, label: '学习笔记' },
+  { href: `${base}projects/`, label: '项目作品集' },
+  { href: `${base}life/`, label: '生活随笔' },
+  { href: `${base}about/`, label: '关于我' },
+];
+---
+
+<header>
+  <div class="wrap">
+    <a class="brand" href={base}>{siteName}的博客</a>
+    <nav>
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={{
+              active: item.href === base ? path === item.href : path.startsWith(item.href),
+            }}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .wrap {
+    width: min(880px, 100% - 32px);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    gap: 12px;
+  }
+  .brand { font-weight: 700; color: var(--fg); font-size: 17px; white-space: nowrap; }
+  .brand:hover { text-decoration: none; }
+  nav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  nav a { color: var(--muted); font-size: 14px; white-space: nowrap; }
+  nav a.active, nav a:hover { color: var(--accent); text-decoration: none; font-weight: 600; }
+  @media (max-width: 640px) {
+    .wrap { flex-direction: column; padding: 8px 0; }
+  }
+</style>

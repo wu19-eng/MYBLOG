@@ -1,0 +1,61 @@
+---
+// 生活随笔列表页
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
+
+const categoryLabels: Record<string, string> = {
+  essays: '随笔',
+  reading: '读书',
+  photos: '照片',
+};
+
+const all = (await getCollection('life')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const active = Astro.url.searchParams.get('category') ?? 'all';
+const filtered = active === 'all' ? all : all.filter((l) => l.data.category === active);
+const formatDate = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base title="生活随笔 · 【站点名】" description="随笔、读书与照片——书、照片，和一些值得被写下来的瞬间。">
+  <header class="page-head">
+    <h1>生活随笔</h1>
+    <p>随笔 · 读书 · 照片。这个板块完全公开，不涉及私密内容。</p>
+  </header>
+
+  <nav class="tabs">
+    <a href={`${base}life/`} class:list={{ active: active === 'all' }}>全部</a>
+    {
+      Object.entries(categoryLabels).map(([key, label]) => (
+        <a href={`${base}life/?category=${key}`} class:list={{ active: active === key }}>
+          {label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <ul class="list">
+    {
+      filtered.map((l) => (
+        <li>
+          <a class="title" href={`${base}life/${l.id}/`}>{l.data.title}</a>
+          <div class="meta">
+            <span>{formatDate(l.data.date)}</span>
+            <span class="cat-badge">{categoryLabels[l.data.category]}</span>
+          </div>
+          {l.data.description && <p class="desc">{l.data.description}</p>}
+          <div class="tags">
+            {l.data.tags?.map((t) => <a href={`${base}tags/${t}`}>#{t}</a>)}
+          </div>
+        </li>
+      ))
+    }
+    {
+      filtered.length === 0 && (
+        <li class="empty">这里还没有内容，去 <a href={`${base}life/`}>全部</a> 看看，或新建一篇吧。</li>
+      )
+    }
+  </ul>
+</Base>

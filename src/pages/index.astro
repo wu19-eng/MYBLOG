@@ -1,0 +1,121 @@
+---
+// 首页：Hero + 分类入口 + 最新内容
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
+const notes = (await getCollection('notes')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const projects = (await getCollection('projects')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const life = (await getCollection('life')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const formatDate = (d: Date) => d.toISOString().slice(0, 10);
+const email = 'you@example.com'; // TODO: 换成你的邮箱
+const categories = [
+  { href: `${base}notes/`, title: '学习笔记', desc: '电气专业课 · 考研数一 · Simulink 仿真 · Python', color: 'var(--notes)' },
+  { href: `${base}projects/`, title: '项目作品集', desc: '课程设计 · 仿真项目 · 竞赛（含踩坑复盘）', color: 'var(--projects)' },
+  { href: `${base}life/`, title: '生活随笔', desc: '随笔 · 读书 · 照片', color: 'var(--life)' },
+  { href: `${base}about/`, title: '关于我', desc: '个人简介 · 建站说明', color: 'var(--about)' },
+];
+---
+
+<Base title="【站点名】 · 学习笔记、项目作品集与生活随笔" description="一个电气人的学习轨迹与工程实践——把笔记写清楚，把项目做扎实，把生活留个记录。">
+  <section class="hero">
+    <h1>一个电气人的学习轨迹与工程实践</h1>
+    <p class="slogan">把笔记写清楚，把项目做扎实，把生活留个记录。</p>
+    <p class="intro">
+      【姓名】· 电气工程及其自动化专业在读 · 备考研究生（数一 · 英一 · 电路）
+      <br />
+      这里是我的数字自留地，也是我的求职名片。
+    </p>
+    <p class="mail">
+      联系我：<a href={`mailto:${email}`}>{email}</a>
+    </p>
+  </section>
+
+  <section class="cards">
+    {
+      categories.map((c) => (
+        <a class="card" style={`--c: ${c.color}`} href={c.href}>
+          <span class="card-title">{c.title}</span>
+          <span class="card-desc">{c.desc}</span>
+          <span class="card-more">进入 →</span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="cols">
+    <div class="col">
+      <h2><a href={`${base}notes/`}>最新笔记</a></h2>
+      <ul>
+        {notes.slice(0, 3).map((n) => (
+          <li>
+            <a href={`${base}notes/${n.id}/`}>{n.data.title}</a>
+            <span class="date">{formatDate(n.data.date)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="col">
+      <h2><a href={`${base}projects/`}>最新项目</a></h2>
+      <ul>
+        {projects.slice(0, 3).map((p) => (
+          <li>
+            <a href={`${base}projects/${p.id}/`}>{p.data.title}</a>
+            <span class="date">{formatDate(p.data.date)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="col">
+      <h2><a href={`${base}life/`}>最新随笔</a></h2>
+      <ul>
+        {life.slice(0, 3).map((l) => (
+          <li>
+            <a href={`${base}life/${l.id}/`}>{l.data.title}</a>
+            <span class="date">{formatDate(l.data.date)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { text-align: center; padding: 40px 0 28px; }
+  .hero h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.4; }
+  .slogan { margin: 0 0 14px; color: var(--muted); font-size: 16px; }
+  .intro { margin: 0 0 8px; color: #475569; font-size: 15px; }
+  .mail { margin: 0; font-size: 14px; }
+
+  .cards { display: flex; flex-wrap: wrap; gap: 14px; margin: 28px 0 36px; }
+  .card {
+    flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;
+    padding: 18px 18px 14px; border: 1px solid var(--line); border-top: 3px solid var(--c);
+    border-radius: 10px; background: var(--card); color: var(--fg);
+  }
+  .card:hover { text-decoration: none; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08); transform: translateY(-2px); }
+  .card-title { font-size: 17px; font-weight: 700; }
+  .card-desc { color: var(--muted); font-size: 13px; flex: 1; }
+  .card-more { font-size: 13px; color: var(--c); font-weight: 600; }
+
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .col h2 { font-size: 17px; margin: 0 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+  .col ul { list-style: none; padding: 0; margin: 0; }
+  .col li { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .col li:last-child { border-bottom: none; }
+  .col li a { color: var(--fg); font-size: 14px; }
+  .col li a:hover { color: var(--accent); text-decoration: none; }
+  .col .date { color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 760px) {
+    .hero h1 { font-size: 24px; }
+    .cols { grid-template-columns: 1fr; gap: 20px; }
+  }
+</style>

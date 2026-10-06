@@ -1,0 +1,80 @@
+---
+// 标签聚合页：汇总笔记 / 项目 / 生活中含有该标签的所有内容
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const collections = await Promise.all([
+    getCollection('notes'),
+    getCollection('projects'),
+    getCollection('life'),
+  ]);
+  const tags = [...new Set(collections.flatMap((c) => c.flatMap((e) => e.data.tags ?? [])))];
+  return tags.map((t) => ({ params: { tag: t }, props: { tag: t } }));
+}
+
+const { tag } = Astro.props;
+const formatDate = (d: Date) => d.toISOString().slice(0, 10);
+const base = import.meta.env.BASE_URL;
+
+const notes = (await getCollection('notes')).filter((e) => e.data.tags?.includes(tag));
+const projects = (await getCollection('projects')).filter((e) => e.data.tags?.includes(tag));
+const life = (await getCollection('life')).filter((e) => e.data.tags?.includes(tag));
+---
+
+<Base title={`#${tag} · 【站点名】`} description={`标签 ${tag} 下的全部内容`}>
+  <header class="page-head">
+    <h1>#{tag}</h1>
+    <p>笔记 {notes.length} · 项目 {projects.length} · 生活 {life.length}</p>
+  </header>
+
+  {notes.length > 0 && (
+    <section>
+      <h2 class="group">学习笔记</h2>
+      <ul class="list">
+        {notes.map((n) => (
+          <li>
+            <a class="title" href={`${base}notes/${n.id}/`}>{n.data.title}</a>
+            <div class="meta"><span>{formatDate(n.data.date)}</span></div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {projects.length > 0 && (
+    <section>
+      <h2 class="group">项目作品</h2>
+      <ul class="list">
+        {projects.map((p) => (
+          <li>
+            <a class="title" href={`${base}projects/${p.id}/`}>{p.data.title}</a>
+            <div class="meta"><span>{formatDate(p.data.date)}</span></div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {life.length > 0 && (
+    <section>
+      <h2 class="group">生活随笔</h2>
+      <ul class="list">
+        {life.map((l) => (
+          <li>
+            <a class="title" href={`${base}life/${l.id}/`}>{l.data.title}</a>
+            <div class="meta"><span>{formatDate(l.data.date)}</span></div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {notes.length + projects.length + life.length === 0 && (
+    <p class="empty">该标签下暂无内容。</p>
+  )}
+</Base>
+
+<style>
+  .group { font-size: 18px; margin: 28px 0 8px; }
+</style>
