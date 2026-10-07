@@ -22,6 +22,12 @@ const base = import.meta.env.BASE_URL;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <!-- KaTeX 公式样式（文章中的 $...$ / $$...$$ 公式渲染） -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+      crossorigin="anonymous"
+    />
     <style is:global>
       /* ===== 设计系统：暖白极简杂志风 ===== */
       :root {
