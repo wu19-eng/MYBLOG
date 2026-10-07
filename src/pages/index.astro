@@ -43,10 +43,10 @@ const feed = [
 ].sort((a, b) => b.date.getTime() - a.date.getTime());
 
 const sections = [
-  { href: `${base}notes/`, num: '01', title: '学习笔记', desc: '电气专业课 · 考研数一 · Simulink 仿真 · Python' },
-  { href: `${base}projects/`, num: '02', title: '项目作品集', desc: '课程设计 · 仿真项目 · 竞赛，附踩坑复盘' },
-  { href: `${base}life/`, num: '03', title: '生活随笔', desc: '随笔 · 读书 · 照片' },
-  { href: `${base}about/`, num: '04', title: '关于我', desc: '个人简介 · 建站说明' },
+  { href: `${base}notes/`, num: '01', title: '学习笔记' },
+  { href: `${base}projects/`, num: '02', title: '项目作品集' },
+  { href: `${base}life/`, num: '03', title: '生活随笔' },
+  { href: `${base}about/`, num: '04', title: '关于我' },
 ];
 
 // ===== 站内搜索索引（无后端：构建时把全文索引内联进页面） =====
@@ -89,7 +89,7 @@ const searchIndex = [
 const searchIndexJson = JSON.stringify(searchIndex).replace(/</g, '\\u003c');
 ---
 
-<Base title="小九 · 学习笔记、项目作品集与生活随笔" description="一个电气人的学习轨迹与工程实践——把笔记写清楚，把项目做扎实，把生活留个记录。">
+<Base title="小九的个人小屋" description="数字时代的留痕">
 
   <section class="hero">
     <p class="kicker">Notes · Projects · Life</p>
@@ -105,7 +105,7 @@ const searchIndexJson = JSON.stringify(searchIndex).replace(/</g, '\\u003c');
     <input
       class="search-input"
       type="search"
-      placeholder="搜索标题 / 标签 / 关键词，如：Simulink、#考研、笔记"
+      placeholder="搜索标题 / 标签 / 关键词"
       aria-label="站内搜索"
       autocomplete="off"
     />
