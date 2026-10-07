@@ -15,7 +15,7 @@ description: 个人简介与建站说明
 ## 建站说明
 
 - **技术栈**：Astro + Markdown + GitHub Actions + GitHub Pages，纯静态、无后端。
-- **写作流程**：在 `src/content/` 下新建 Markdown 文件，填写 Frontmatter（title / date / category / tags），推送到 GitHub 后自动构建上线。
+- **写作流程**：在 `src/content/` 下新建 Markdown 文件，填写 Frontmatter（title / date / tags），推送到 GitHub 后自动构建上线。
 - **内容授权**：本站内容除特别注明外均为原创，转载需注明出处。
 
 ## 站点更新记录

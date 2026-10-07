@@ -8,7 +8,7 @@
 
 ```bash
 npm install     # 装依赖（只需一次）
-npm run dev     # 本地预览 http://localhost:4321
+npm run dev     # 本地预览 http://localhost:4321/MYBLOG/
 npm run build   # 构建到 dist/
 ```
 
@@ -17,19 +17,9 @@ npm run build   # 构建到 dist/
 ```
 src/
 ├─ content/                  ← ★ 文章都放这里（.md 文件）
-│  ├─ notes/                 # 学习笔记
-│  │  ├─ electrical/         #   电气专业课
-│  │  ├─ math/               #   考研数一
-│  │  ├─ simulink/           #   Simulink 仿真
-│  │  └─ python/             #   Python 笔记
-│  ├─ projects/              # 项目作品集
-│  │  ├─ course-design/      #   课程设计
-│  │  ├─ simulation/         #   仿真项目
-│  │  └─ competition/        #   竞赛
-│  └─ life/                  # 生活随笔
-│     ├─ essays/             #   随笔
-│     ├─ reading/            #   读书
-│     └─ photos/             #   照片
+│  ├─ notes/                 # 学习笔记：所有笔记直接放这个文件夹
+│  ├─ projects/              # 项目作品集：所有项目直接放这个文件夹
+│  └─ life/                  # 生活随笔：所有随笔直接放这个文件夹
 public/
 └─ images/                   ← ★ 照片文件放这里
 ```
@@ -42,15 +32,14 @@ public/
 
 ### 一、添加一篇学习笔记
 
-1. 打开 `src/content/notes/` 下对应的分类文件夹（如 `simulink/`）
+1. 打开 `src/content/notes/` 文件夹
 2. 新建一个 `.md` 文件，名字随意，建议英文短名，如 `simulink-quickstart.md`
 3. 把下面的内容粘进去，改掉【】里的部分：
 
 ```markdown
 ---
 title: Simulink 建模入门
-date: 2026-10-06
-category: simulink
+date: 2026-10-07
 tags: [Simulink, 建模]
 description: 一句话摘要，显示在列表页
 ---
@@ -62,13 +51,12 @@ description: 一句话摘要，显示在列表页
 
 ### 二、添加一个项目
 
-在 `src/content/projects/` 对应分类下新建 `.md`，用这个模板：
+在 `src/content/projects/` 下新建 `.md`，用这个模板：
 
 ```markdown
 ---
 title: 110kV 变电站主接线设计
-date: 2026-10-06
-category: course-design
+date: 2026-10-07
 tech: [变电站, 继电保护]
 status: 已完成
 description: 项目一句话简介
@@ -85,13 +73,12 @@ description: 项目一句话简介
 
 ### 三、添加一篇随笔（含读书、照片）
 
-在 `src/content/life/` 对应分类下新建 `.md`，用这个模板：
+在 `src/content/life/` 下新建 `.md`，用这个模板：
 
 ```markdown
 ---
 title: 今天的一件小事
-date: 2026-10-06
-category: essays
+date: 2026-10-07
 tags: [随笔]
 description: 摘要（可省略这一行）
 ---
@@ -109,9 +96,9 @@ description: 摘要（可省略这一行）
 
 ### 四、修改文章
 
-用任何编辑器打开对应 `.md` 文件直接改即可：标题、正文、分类、标签都能改。保存后执行"发布"。
+用任何编辑器打开对应 `.md` 文件直接改即可：标题、正文、标签都能改。保存后执行"发布"。
 
-- 改 `title` = 改文章标题；改 `category` = 换分类；改 `date` = 换排序位置（最新在前）。
+- 改 `title` = 改文章标题；改 `date` = 换排序位置（最新在前）。
 
 ### 五、删除文章
 
@@ -135,7 +122,7 @@ git push
 npm run dev
 ```
 
-浏览器打开 http://localhost:4321 ，改完文件刷新即可看到效果，确认没问题再 push。
+浏览器打开 http://localhost:4321/MYBLOG/ ，改完文件刷新即可看到效果，确认没问题再 push。
 
 ### 八、字段速查表
 
@@ -143,14 +130,11 @@ npm run dev
 | --- | --- | --- | --- |
 | `title` | ✅ | 文章标题 | 全部 |
 | `date` | ✅ | 日期，格式 `YYYY-MM-DD` | 全部 |
-| `category` | ✅ | 分类（见上面文件夹名） | 全部 |
-| `tags` | 可选 | 标签，`[]` 内逗号分隔，用于标签页 | 笔记 / 随笔 |
+| `tags` | 可选 | 标签，`[]` 内逗号分隔，用于标签页 | 全部 |
 | `description` | 可选 | 列表页摘要 | 全部 |
 | `tech` | 可选 | 技术栈 | 项目 |
 | `status` | 可选 | 状态，如"已完成" | 项目 |
 | `repo` | 可选 | 代码仓库网址 | 项目 |
-
-`category` 取值对照：笔记 `electrical / math / simulink / python`；项目 `course-design / simulation / competition`；生活 `essays / reading / photos`。
 
 ---
 
@@ -163,7 +147,7 @@ npm run dev
 - [ ] `src/pages/index.astro`：首页的【姓名】和简介改成真实信息
 - [ ] `src/pages/about.md`：个人简介、求职方向、技能栈
 - [ ] `public/favicon.svg`：换站点图标（当前是 "B"）
-- [ ] 写第一批真实文章替换空目录
+- [ ] 写第一批真实文章
 
 ## 路线图（可选增强）
 

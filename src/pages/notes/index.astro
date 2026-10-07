@@ -1,55 +1,33 @@
 ---
-// 学习笔记列表页：分类 Tab + 时间流 + 标签云
+// 学习笔记列表页：时间流 + 标签云
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
 
-const categoryLabels: Record<string, string> = {
-  electrical: '电气专业课',
-  math: '考研数一',
-  simulink: 'Simulink 仿真',
-  python: 'Python 笔记',
-};
-
 const all = (await getCollection('notes')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-const active = Astro.url.searchParams.get('category') ?? 'all';
-const filtered =
-  active === 'all' ? all : all.filter((n) => n.data.category === active);
 const tags = [...new Set(all.flatMap((n) => n.data.tags ?? []))].sort();
 const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
-<Base title="学习笔记 · 小九" description="电气专业课、考研数一、Simulink 仿真、Python 的学习笔记，按分类与标签归档。">
+<Base title="学习笔记 · 小九" description="电气专业课、考研数一、Simulink 仿真、Python 的学习笔记，按标签归档。">
   <header class="page-head">
     <p class="kicker">Learning Notes</p>
     <h1>学习笔记</h1>
-    <p>电气专业课 · 考研数一 · Simulink 仿真 · Python，按标签归档，方便检索。</p>
+    <p>电气专业课 · 考研数一 · Simulink 仿真 · Python，按标签归档。</p>
   </header>
-
-  <nav class="tabs">
-    <a href={`${base}notes/`} class:list={{ active: active === 'all' }}>全部</a>
-    {
-      Object.entries(categoryLabels).map(([key, label]) => (
-        <a href={`${base}notes/?category=${key}`} class:list={{ active: active === key }}>
-          {label}
-        </a>
-      ))
-    }
-  </nav>
 
   <ul class="feed">
     {
-      filtered.map((n) => (
+      all.map((n) => (
         <li class="article-row">
           <time>{formatDate(n.data.date)}</time>
           <div class="body">
             <h3><a href={`${base}notes/${n.id}/`}>{n.data.title}</a></h3>
             {n.data.description && <p class="desc">{n.data.description}</p>}
             <div class="meta">
-              <span class="cat-badge">{categoryLabels[n.data.category]}</span>
               {n.data.tags?.map((t) => (
                 <a class="tag-link" href={`${base}tags/${t}`}>#{t}</a>
               ))}
@@ -59,8 +37,8 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
       ))
     }
     {
-      filtered.length === 0 && (
-        <li class="empty">这个分类还没有内容，去 <a href={`${base}notes/`}>全部</a> 看看。</li>
+      all.length === 0 && (
+        <li class="empty">第一篇笔记正在路上。</li>
       )
     }
   </ul>

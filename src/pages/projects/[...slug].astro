@@ -8,18 +8,11 @@ export async function getStaticPaths() {
   return projects.map((p) => ({ params: { slug: p.id }, props: { entry: p } }));
 }
 
-const categoryLabels: Record<string, string> = {
-  'course-design': '课程设计',
-  simulation: '仿真项目',
-  competition: '竞赛',
-};
-
 const { entry } = Astro.props;
 ---
 
 <PostLayout
   entry={entry}
-  categoryLabel={categoryLabels[entry.data.category]}
-  backHref={entry.data.category ? `${import.meta.env.BASE_URL}projects/?category=${entry.data.category}` : `${import.meta.env.BASE_URL}projects/`}
+  backHref={`${import.meta.env.BASE_URL}projects/`}
   backLabel="← 项目列表"
 />

@@ -5,18 +5,9 @@ import { getCollection } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
 
-const categoryLabels: Record<string, string> = {
-  'course-design': '课程设计',
-  simulation: '仿真项目',
-  competition: '竞赛',
-};
-
 const all = (await getCollection('projects')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-const active = Astro.url.searchParams.get('category') ?? 'all';
-const filtered =
-  active === 'all' ? all : all.filter((p) => p.data.category === active);
 const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
@@ -27,23 +18,11 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
     <p>课程设计 · 仿真项目 · 竞赛。每个项目包含方案介绍与踩坑复盘，成果尽量量化。</p>
   </header>
 
-  <nav class="tabs">
-    <a href={`${base}projects/`} class:list={{ active: active === 'all' }}>全部</a>
-    {
-      Object.entries(categoryLabels).map(([key, label]) => (
-        <a href={`${base}projects/?category=${key}`} class:list={{ active: active === key }}>
-          {label}
-        </a>
-      ))
-    }
-  </nav>
-
   <div class="grid">
     {
-      filtered.map((p) => (
+      all.map((p) => (
         <a class="card" href={`${base}projects/${p.id}/`}>
           <div class="card-top">
-            <span class="cat-badge">{categoryLabels[p.data.category]}</span>
             <time>{formatDate(p.data.date)}</time>
           </div>
           <div class="card-title">{p.data.title}</div>
@@ -61,8 +40,8 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
   </div>
 
   {
-    filtered.length === 0 && (
-      <p class="empty">这个分类还没有项目，去 <a href={`${base}projects/`}>全部</a> 看看。</p>
+    all.length === 0 && (
+      <p class="empty">第一个项目正在路上。</p>
     )
   }
 </Base>
@@ -86,7 +65,7 @@ const formatDate = (d: Date) => d.toISOString().slice(0, 10);
     box-shadow: 0 8px 24px rgba(24, 24, 27, 0.06);
     border-color: #d4d4d8;
   }
-  .card-top { display: flex; justify-content: space-between; align-items: center; }
+  .card-top { display: flex; justify-content: flex-end; align-items: center; }
   .card-top time { font-family: var(--mono); font-size: 12px; color: var(--faint); }
   .card-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.4; }
   .desc { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1; }
