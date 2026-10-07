@@ -48,6 +48,45 @@ const sections = [
   { href: `${base}life/`, num: '03', title: '生活随笔', desc: '随笔 · 读书 · 照片' },
   { href: `${base}about/`, num: '04', title: '关于我', desc: '个人简介 · 建站说明' },
 ];
+
+// ===== 站内搜索索引（无后端：构建时把全文索引内联进页面） =====
+const rawFiles = import.meta.glob('../content/**/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+const cleanBody = (raw: string) =>
+  raw
+    .replace(/^---[\s\S]*?---/, '') // 去掉 frontmatter
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ') // 去图片
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // 链接保留文字
+    .replace(/[#*`>_~\-\[\]()]/g, ' ') // 去标记符号
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const buildIndex = (entry: any, section: string, label: string, tags: string[]) => {
+  const raw = rawFiles[`../content/${section}/${entry.id}.md`] ?? '';
+  const text =
+    `${label} ${entry.data.title} ${entry.data.description} ${tags.join(' ')} ${cleanBody(raw)}`.toLowerCase();
+  return {
+    title: entry.data.title,
+    date: formatDate(entry.data.date),
+    url: `${base}${section}/${entry.id}/`,
+    desc: entry.data.description,
+    label,
+    tags,
+    text,
+  };
+};
+
+const searchIndex = [
+  ...notes.map((n) => buildIndex(n, 'notes', '学习笔记', n.data.tags ?? [])),
+  ...projects.map((p) => buildIndex(p, 'projects', '项目作品集', p.data.tech ?? [])),
+  ...life.map((l) => buildIndex(l, 'life', '生活随笔', l.data.tags ?? [])),
+];
+
+const searchIndexJson = JSON.stringify(searchIndex).replace(/</g, '\\u003c');
 ---
 
 <Base title="小九 · 学习笔记、项目作品集与生活随笔" description="一个电气人的学习轨迹与工程实践——把笔记写清楚，把项目做扎实，把生活留个记录。">
@@ -60,6 +99,21 @@ const sections = [
       <span class="w">moment</span>
     </h1>
     <p class="slogan">简单记录</p>
+  </section>
+
+  <section class="search-sec">
+    <input
+      class="search-input"
+      type="search"
+      placeholder="搜索标题 / 标签 / 关键词，如：Simulink、#考研、笔记"
+      aria-label="站内搜索"
+      autocomplete="off"
+    />
+    <div class="search-results" hidden>
+      <p class="search-count"></p>
+      <ul class="feed search-list"></ul>
+      <p class="search-empty">没有找到相关内容，换个词试试。</p>
+    </div>
   </section>
 
   <section class="feed-sec">
@@ -148,6 +202,34 @@ const sections = [
   .hero .slogan { margin: 0 0 10px; color: var(--muted); font-size: 15px; }
   .hero .intro { margin: 0; color: var(--muted); font-size: 15px; }
 
+  /* ===== 站内搜索 ===== */
+  .search-sec { padding: 28px 0 4px; }
+  .search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--fg);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .search-input::placeholder { color: var(--faint); }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .search-results { margin-top: 14px; }
+  .search-count { margin: 0 0 4px; font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
+  .search-list { margin-bottom: 0 !important; }
+  .search-empty { color: var(--faint); font-size: 14.5px; font-family: var(--serif); font-style: italic; }
+  .s-label { font-size: 12px; font-weight: 600; color: var(--accent); }
+
   .feed-sec { padding: 48px 0 8px; }
   .sec-head {
     display: flex;
@@ -184,3 +266,63 @@ const sections = [
     .hero .display { font-size: 40px; line-height: 1.1; }
   }
 </style>
+
+<script is:inline define:vars={{ searchIndexJson, base }}>
+  const SEARCH_INDEX = JSON.parse(searchIndexJson);
+  const BASE = base;
+  const input = document.querySelector('.search-input');
+  const box = document.querySelector('.search-results');
+  const listEl = document.querySelector('.search-list');
+  const countEl = document.querySelector('.search-count');
+  const emptyEl = document.querySelector('.search-empty');
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const render = () => {
+    const q = (input.value || '').trim().toLowerCase();
+    if (!q) {
+      box.hidden = true;
+      return;
+    }
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const hits = SEARCH_INDEX.filter((it) => tokens.every((t) => it.text.includes(t)));
+    countEl.textContent = hits.length + ' 条结果';
+    if (!hits.length) {
+      emptyEl.hidden = false;
+      listEl.innerHTML = '';
+    } else {
+      emptyEl.hidden = true;
+      listEl.innerHTML = hits
+        .map((it) => {
+          const desc = it.desc ? '<p class="desc">' + esc(it.desc) + '</p>' : '';
+          const tags = (it.tags || [])
+            .map((t) => '<a class="tag-link" href="' + BASE + 'tags/' + encodeURIComponent(t) + '">#' + esc(t) + '</a>')
+            .join('');
+          return (
+            '<li class="article-row"><time>' +
+            esc(it.date) +
+            '</time><div class="body"><h3><a href="' +
+            esc(it.url) +
+            '">' +
+            esc(it.title) +
+            '</a></h3>' +
+            desc +
+            '<div class="meta"><span class="s-label">' +
+            esc(it.label) +
+            '</span>' +
+            tags +
+            '</div></div></li>'
+          );
+        })
+        .join('');
+    }
+    box.hidden = false;
+  };
+  input.addEventListener('input', render);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      input.value = '';
+      render();
+      input.blur();
+    }
+  });
+</script>
