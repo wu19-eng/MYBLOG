@@ -1,11 +1,10 @@
 ---
 // 静态页面布局：用于 src/pages 下的 .md 页面（如 about.md）
+// Astro 5：静态 md 页面的 frontmatter 在 Astro.props.frontmatter，正文通过 <slot /> 渲染
 import Base from './Base.astro';
-import { render } from 'astro:content';
 
-// Astro 5：Markdown 页面的 frontmatter 直接挂在 Astro.props 上
-const { title, description } = Astro.props;
-const { Content } = await render(Astro.props);
+const { frontmatter } = Astro.props;
+const { title, description } = frontmatter;
 ---
 
 <Base title={`${title} · 小九`} description={description}>
@@ -14,7 +13,7 @@ const { Content } = await render(Astro.props);
       <h1>{title}</h1>
     </header>
     <div class="content">
-      <Content />
+      <slot />
     </div>
   </article>
 </Base>

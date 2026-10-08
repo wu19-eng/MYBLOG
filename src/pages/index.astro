@@ -152,7 +152,6 @@ const searchIndexJson = JSON.stringify(searchIndex).replace(/</g, '\\u003c');
         <a class="index-row" href={s.href}>
           <span class="num">{s.num}</span>
           <span class="idx-title">{s.title}</span>
-          <span class="arrow">→</span>
         </a>
       ))
     }
@@ -260,7 +259,6 @@ const searchIndexJson = JSON.stringify(searchIndex).replace(/</g, '\\u003c');
   }
   .num { font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
   .idx-title { font-size: 17px; font-weight: 700; }
-  .arrow { color: var(--faint); font-size: 15px; }
 
   @media (max-width: 640px) {
     .hero .display { font-size: 40px; line-height: 1.1; }
