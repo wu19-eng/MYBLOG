@@ -17,7 +17,7 @@ $$
 \overline{A\cup B}=\overline{A}\cap\overline{B};\quad \overline{A\cap B}=\overline{A}\cup\overline{B}
 $$
 
-口诀：先逆，后交并；差事件 = 交逆
+口诀：先逆，后交再并差
 
 ### 概率公理与基本公式
 
@@ -87,7 +87,9 @@ $$
 \int_{-\infty}^{+\infty}f(t)\,dt=1
 $$
 
-### 0-1 分布 $B(1,p)$
+### 0-1 分布
+
+记作 $B(1,p)$：
 
 $$
 P\{X=1\}=p,\quad P\{X=0\}=1-p
@@ -95,9 +97,9 @@ $$
 
 > 注：当 $n\ll N$ 时，超几何分布可以近似二项分布。
 
-### 均匀分布 $U(a,b)$
+### 均匀分布
 
-概率密度：
+记作 $U(a,b)$。概率密度：
 
 $$
 f(x)=\begin{cases}
@@ -116,9 +118,9 @@ F(x)=\begin{cases}
 \end{cases}
 $$
 
-### 指数分布 $E(\lambda)$
+### 指数分布
 
-分布函数：
+记作 $E(\lambda)$。分布函数：
 
 $$
 F(t)=1-e^{-\lambda t},\quad t>0
@@ -138,9 +140,9 @@ $$
 
 理解：$T$ 为事件发生等待时间；$T<t$ 代表 $t$ 时刻之前事件未发生；$\lambda$ 为事件发生强度；指数分布对应泊松分布的间隔时间。
 
-### 正态分布 $N(\mu,\sigma^2)$
+### 正态分布
 
-概率密度：
+记作 $N(\mu,\sigma^2)$。概率密度：
 
 $$
 f(x)=\frac{1}{\sqrt{2\pi}\,\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}},\quad -\infty<x<+\infty

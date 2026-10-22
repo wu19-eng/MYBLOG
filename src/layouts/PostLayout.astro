@@ -38,7 +38,7 @@ for (const h of headings) {
 
 <Base title={`${entry.data.title} · ${siteName}`} description={entry.data.description}>
   <article class="post">
-    <p class="back"><a href={backHref || base}>← {backLabel || '返回'}</a></p>
+    <p class="back"><a href={backHref || base}>{backLabel || '返回'}</a></p>
 
     <header class="head">
       <h1>{entry.data.title}</h1>
@@ -79,7 +79,7 @@ for (const h of headings) {
       <Content />
     </div>
 
-    <p class="back bottom"><a href={backHref || base}>← {backLabel || '返回'}</a></p>
+    <p class="back bottom"><a href={backHref || base}>{backLabel || '返回'}</a></p>
   </article>
 </Base>
 
