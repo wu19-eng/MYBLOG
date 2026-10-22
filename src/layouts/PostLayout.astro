@@ -1,5 +1,6 @@
 ---
 // 文章详情布局：笔记 / 项目 / 生活共用 —— 阅读版式
+// v2: 目录改为嵌套层级 + 自动编号
 import Base from './Base.astro';
 import { render } from 'astro:content';
 
@@ -15,6 +16,24 @@ const { Content, headings } = await render(entry);
 const formatDate = (d: Date) => d.toISOString().slice(0, 10);
 const siteName = '小九';
 const base = import.meta.env.BASE_URL;
+
+// 把标题（忽略 h1，正文从 h2 起）整理成嵌套目录树：h2 为一级，其后的 h3 为其子项
+const tocTree: { text: string; slug: string; children: { text: string; slug: string }[] }[] = [];
+let currentH2: (typeof tocTree)[number] | null = null;
+for (const h of headings) {
+  if (h.depth <= 1 || h.depth > 3) continue;
+  if (h.depth === 2) {
+    currentH2 = { text: h.text, slug: h.slug, children: [] };
+    tocTree.push(currentH2);
+  } else if (h.depth === 3) {
+    if (currentH2) {
+      currentH2.children.push({ text: h.text, slug: h.slug });
+    } else {
+      currentH2 = { text: h.text, slug: h.slug, children: [] };
+      tocTree.push(currentH2);
+    }
+  }
+}
 ---
 
 <Base title={`${entry.data.title} · ${siteName}`} description={entry.data.description}>
@@ -34,17 +53,24 @@ const base = import.meta.env.BASE_URL;
       {entry.data.description && <p class="desc">{entry.data.description}</p>}
     </header>
 
-    {headings.length > 0 && (
-      <details class="toc">
+    {tocTree.length > 0 && (
+      <details class="toc" open>
         <summary>目录</summary>
-        <ol>
-          {headings
-            .filter((h: any) => h.depth <= 3)
-            .map((h: any) => (
-              <li style={`margin-left: ${(h.depth - 2) * 14}px`}>
-                <a href={`#${h.slug}`}>{h.text}</a>
-              </li>
-            ))}
+        <ol class="toc-list">
+          {tocTree.map((h2) => (
+            <li class="toc-h2">
+              <a href={`#${h2.slug}`}>{h2.text}</a>
+              {h2.children.length > 0 && (
+                <ol class="toc-sub">
+                  {h2.children.map((h3) => (
+                    <li class="toc-h3">
+                      <a href={`#${h3.slug}`}>{h3.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </li>
+          ))}
         </ol>
       </details>
     )}
@@ -86,6 +112,7 @@ const base = import.meta.env.BASE_URL;
   .head .chip { font-size: 12px; color: #8a6a73; background: #f3e7e0; border-radius: 5px; padding: 1px 9px; }
   .head .desc { margin: 14px 0 0; color: var(--muted); font-size: 15px; }
 
+  /* ===== 目录：嵌套层级 + 自动编号 ===== */
   .toc {
     margin: 0 0 32px;
     padding: 14px 18px;
@@ -95,12 +122,54 @@ const base = import.meta.env.BASE_URL;
     font-size: 14px;
   }
   .toc summary { cursor: pointer; color: var(--muted); font-weight: 600; }
-  .toc ol { margin: 10px 0 0; padding-left: 18px; }
-  .toc li { margin: 3px 0; }
-  .toc a { color: var(--muted); }
+
+  .toc .toc-list {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    counter-reset: toc;
+  }
+  .toc .toc-list > .toc-h2 {
+    counter-increment: toc;
+    margin: 7px 0;
+  }
+  .toc .toc-list > .toc-h2 > a {
+    display: block;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .toc .toc-list > .toc-h2 > a::before {
+    content: counter(toc) ". ";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 2px;
+  }
+
+  .toc .toc-sub {
+    list-style: none;
+    margin: 5px 0 2px;
+    padding-left: 24px;
+    counter-reset: toc-sub;
+    border-left: 1px solid var(--line);
+  }
+  .toc .toc-sub > .toc-h3 {
+    counter-increment: toc-sub;
+    margin: 4px 0;
+  }
+  .toc .toc-sub > .toc-h3 > a {
+    color: var(--muted);
+  }
+  .toc .toc-sub > .toc-h3 > a::before {
+    content: counter(toc) "." counter(toc-sub) " ";
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
   .toc a:hover { color: var(--accent); }
 
   @media (max-width: 640px) {
     .head h1 { font-size: 28px; }
+    .toc .toc-sub { padding-left: 16px; }
   }
 </style>
